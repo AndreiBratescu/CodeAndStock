@@ -19,4 +19,11 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<Object[]> findBestSellingStandsForProduct(
             @Param("productId") Long productId,
             @Param("sinceDate") LocalDate sinceDate);
+
+    @Query("SELECT s.product.id, s.storeStand.id, SUM(s.quantitySold) as totalSold " +
+            "FROM Sale s " +
+            "WHERE s.saleDate >= :sinceDate " +
+            "GROUP BY s.product.id, s.storeStand.id")
+    List<Object[]> aggregateSalesByProductAndStand(
+            @Param("sinceDate") LocalDate sinceDate);
 }
