@@ -1,6 +1,8 @@
 package com.stock.stock.repository;
 
+import com.stock.stock.domain.AppUser;
 import com.stock.stock.domain.Sale;
+import com.stock.stock.domain.StoreStand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +28,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
             "GROUP BY s.product.id, s.storeStand.id")
     List<Object[]> aggregateSalesByProductAndStand(
             @Param("sinceDate") LocalDate sinceDate);
+
+    List<Sale> findByAppUser(AppUser appUser);
+
+    List<Sale> findByAppUserAndStoreStand(AppUser appUser, StoreStand storeStand);
 }
