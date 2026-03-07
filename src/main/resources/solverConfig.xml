@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver xmlns="https://timefold.ai/xsd/solver">
+  <solutionClass>com.stock.stock.planning.StockRedistributionSolution</solutionClass>
+  <entityClass>com.stock.stock.planning.Transfer</entityClass>
+  <scoreDirectorFactory>
+    <constraintProviderClass>com.stock.stock.planning.StockConstraintProvider</constraintProviderClass>
+  </scoreDirectorFactory>
+</solver>
