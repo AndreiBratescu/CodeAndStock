@@ -11,7 +11,8 @@ import ai.timefold.solver.core.api.score.buildin.hardsoft.HardSoftScore;
 import com.stock.stock.domain.InventoryItem;
 import com.stock.stock.domain.Product;
 import com.stock.stock.domain.StoreStand;
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
@@ -20,7 +21,13 @@ import java.util.List;
  * plus scorul rezultat.
  */
 @PlanningSolution
+@Data
+@NoArgsConstructor
 public class StockRedistributionSolution {
+
+    /**
+     * Listele de facts, citite din baza de date.
+     */
 
     @ProblemFactCollectionProperty
     private List<Product> productList;
@@ -31,65 +38,26 @@ public class StockRedistributionSolution {
     @ProblemFactCollectionProperty
     private List<InventoryItem> inventoryItemList;
 
+    /**
+     * Entitățile de planificare pe care solverul le modifică.
+     */
+
     @PlanningEntityCollectionProperty
     private List<Transfer> transferList;
 
+    /**
+     * Parametru de configurare pentru domeniul de valori al cantității mutate.
+     * De exemplu, 50 înseamnă că un singur transfer poate avea între 0 și 50 bucăți.
+     */
+
     private int maxQuantityPerTransfer;
+
+    /**
+     * Score-ul multi-nivel (hard/soft) calculat de Timefold.
+     */
 
     @PlanningScore
     private HardSoftScore score;
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
-
-    public List<StoreStand> getStoreStandList() {
-        return storeStandList;
-    }
-
-    public void setStoreStandList(List<StoreStand> storeStandList) {
-        this.storeStandList = storeStandList;
-    }
-
-    public List<InventoryItem> getInventoryItemList() {
-        return inventoryItemList;
-    }
-
-    public void setInventoryItemList(List<InventoryItem> inventoryItemList) {
-        this.inventoryItemList = inventoryItemList;
-    }
-
-    public List<Transfer> getTransferList() {
-        return transferList;
-    }
-
-    public void setTransferList(List<Transfer> transferList) {
-        this.transferList = transferList;
-    }
-
-    public int getMaxQuantityPerTransfer() {
-        return maxQuantityPerTransfer;
-    }
-
-    public void setMaxQuantityPerTransfer(int maxQuantityPerTransfer) {
-        this.maxQuantityPerTransfer = maxQuantityPerTransfer;
-    }
-
-    public HardSoftScore getScore() {
-        return score;
-    }
-
-    public void setScore(HardSoftScore score) {
-        this.score = score;
-    }
-
-    /** Constructor fără argumente cerut de Timefold pentru clonarea soluției. */
-    public StockRedistributionSolution() {
-    }
 
     public StockRedistributionSolution(List<Product> productList,
                                        List<StoreStand> storeStandList,
@@ -103,10 +71,6 @@ public class StockRedistributionSolution {
         this.maxQuantityPerTransfer = maxQuantityPerTransfer;
     }
 
-    /**
-     * Domeniul de valori pentru {@link Transfer#quantityToMove}.
-     * Definim 0..maxQuantityPerTransfer, inclusiv.
-     */
     @ValueRangeProvider(id = "quantityRange")
     public CountableValueRange<Integer> getQuantityRange() {
         // ValueRangeFactory folosește capăt superior exclusiv,
