@@ -2,7 +2,6 @@ package com.stock.stock.planning;
 
 import com.stock.stock.domain.Product;
 import com.stock.stock.domain.StoreStand;
-import lombok.NoArgsConstructor;
 
 import ai.timefold.solver.core.api.domain.entity.PlanningEntity;
 import ai.timefold.solver.core.api.domain.variable.PlanningVariable;
@@ -13,7 +12,6 @@ import ai.timefold.solver.core.api.domain.variable.PlanningVariable;
  * către un stand destinație.
  */
 @PlanningEntity
-@NoArgsConstructor
 public class Transfer {
 
     private Product product;
@@ -22,6 +20,17 @@ public class Transfer {
 
     @PlanningVariable(valueRangeProviderRefs = "quantityRange")
     private Integer quantityToMove;
+
+    /** Constructor fără argumente cerut de Timefold pentru clonare. */
+    public Transfer() {
+    }
+
+    public Transfer(Product product, StoreStand sourceStand, StoreStand targetStand) {
+        this.product = product;
+        this.sourceStand = sourceStand;
+        this.targetStand = targetStand;
+        this.quantityToMove = 0;
+    }
 
     public Product getProduct() {
         return product;
@@ -53,13 +62,6 @@ public class Transfer {
 
     public void setQuantityToMove(Integer quantityToMove) {
         this.quantityToMove = quantityToMove;
-    }
-
-    public Transfer(Product product, StoreStand sourceStand, StoreStand targetStand) {
-        this.product = product;
-        this.sourceStand = sourceStand;
-        this.targetStand = targetStand;
-        this.quantityToMove = 0;
     }
 }
 

@@ -11,7 +11,6 @@ import ai.timefold.solver.core.api.score.buildin.hardsoft.HardSoftScore;
 import com.stock.stock.domain.InventoryItem;
 import com.stock.stock.domain.Product;
 import com.stock.stock.domain.StoreStand;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ import java.util.List;
  * plus scorul rezultat.
  */
 @PlanningSolution
-@NoArgsConstructor
 public class StockRedistributionSolution {
 
     @ProblemFactCollectionProperty
@@ -87,6 +85,10 @@ public class StockRedistributionSolution {
 
     public void setScore(HardSoftScore score) {
         this.score = score;
+    }
+
+    /** Constructor fără argumente cerut de Timefold pentru clonarea soluției. */
+    public StockRedistributionSolution() {
     }
 
     public StockRedistributionSolution(List<Product> productList,

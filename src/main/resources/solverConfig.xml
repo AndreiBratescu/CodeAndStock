@@ -5,4 +5,9 @@
   <scoreDirectorFactory>
     <constraintProviderClass>com.stock.stock.planning.StockConstraintProvider</constraintProviderClass>
   </scoreDirectorFactory>
+  <!-- Terminare foarte rapidă: max 2s; oprire după 0.5s fără îmbunătățire -->
+  <termination>
+    <spentLimit>2s</spentLimit>
+    <unimprovedSpentLimit>500ms</unimprovedSpentLimit>
+  </termination>
 </solver>
