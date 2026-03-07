@@ -20,6 +20,10 @@ public class Sale {
     @JoinColumn(name = "stand_id")
     private StoreStand storeStand;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private AppUser appUser;
+
     private Integer quantitySold;
     private LocalDate saleDate;
 }
