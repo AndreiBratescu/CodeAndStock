@@ -1,7 +1,7 @@
 package com.stock.stock.service;
 
-import ai.timefold.solver.spring.boot.autoconfigure.manager.SolverManager;
 import ai.timefold.solver.core.api.solver.SolverJob;
+import ai.timefold.solver.core.api.solver.SolverManager;
 import com.stock.stock.domain.InventoryItem;
 import com.stock.stock.domain.Product;
 import com.stock.stock.domain.StoreStand;
@@ -86,7 +86,7 @@ public class StockPlanningService {
 
         long problemId = System.currentTimeMillis();
         SolverJob<StockRedistributionSolution, Long> job =
-                solverManager.solve(problemId, id -> problem);
+                solverManager.solve(problemId, problem);
 
         try {
             return job.getFinalBestSolution();

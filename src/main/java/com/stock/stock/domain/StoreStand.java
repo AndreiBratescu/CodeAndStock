@@ -1,11 +1,9 @@
 package com.stock.stock.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "store_stands")
-@Data
 public class StoreStand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +14,37 @@ public class StoreStand {
 
     private String mallName;
 
-    // Capacitatea ajută Timefold să nu trimită prea multe produse într-un stand mic
     private Integer storageCapacity;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public String getMallName() {
+        return mallName;
+    }
+
+    public void setMallName(String mallName) {
+        this.mallName = mallName;
+    }
+
+    public Integer getStorageCapacity() {
+        return storageCapacity;
+    }
+
+    public void setStorageCapacity(Integer storageCapacity) {
+        this.storageCapacity = storageCapacity;
+    }
 }
