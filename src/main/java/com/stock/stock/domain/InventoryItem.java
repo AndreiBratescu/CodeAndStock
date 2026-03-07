@@ -2,7 +2,9 @@ package com.stock.stock.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "inventory")
@@ -25,8 +27,7 @@ public class InventoryItem {
     @Column(name = "arrival_date")
     private LocalDate arrivalDate;
 
-    // Metodă utilitară pentru business logic
     public long getDaysInStock() {
-        return java.time.temporal.ChronoUnit.DAYS.between(arrivalDate, LocalDate.now());
+        return arrivalDate != null ? ChronoUnit.DAYS.between(arrivalDate, LocalDate.now()) : 0L;
     }
 }

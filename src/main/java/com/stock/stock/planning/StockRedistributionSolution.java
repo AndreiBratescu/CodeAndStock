@@ -13,7 +13,6 @@ import com.stock.stock.domain.Product;
 import com.stock.stock.domain.StoreStand;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 /**
@@ -29,6 +28,7 @@ public class StockRedistributionSolution {
     /**
      * Listele de facts, citite din baza de date.
      */
+
     @ProblemFactCollectionProperty
     private List<Product> productList;
 
@@ -41,6 +41,7 @@ public class StockRedistributionSolution {
     /**
      * Entitățile de planificare pe care solverul le modifică.
      */
+
     @PlanningEntityCollectionProperty
     private List<Transfer> transferList;
 
@@ -48,11 +49,13 @@ public class StockRedistributionSolution {
      * Parametru de configurare pentru domeniul de valori al cantității mutate.
      * De exemplu, 50 înseamnă că un singur transfer poate avea între 0 și 50 bucăți.
      */
+
     private int maxQuantityPerTransfer;
 
     /**
      * Score-ul multi-nivel (hard/soft) calculat de Timefold.
      */
+
     @PlanningScore
     private HardSoftScore score;
 
@@ -68,10 +71,6 @@ public class StockRedistributionSolution {
         this.maxQuantityPerTransfer = maxQuantityPerTransfer;
     }
 
-    /**
-     * Domeniul de valori pentru {@link Transfer#quantityToMove}.
-     * Definim 0..maxQuantityPerTransfer, inclusiv.
-     */
     @ValueRangeProvider(id = "quantityRange")
     public CountableValueRange<Integer> getQuantityRange() {
         // ValueRangeFactory folosește capăt superior exclusiv,

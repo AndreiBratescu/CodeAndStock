@@ -27,7 +27,7 @@ public class StockConstraintProvider implements ConstraintProvider {
      * Nu permitem transferuri între orașe diferite (pentru MVP).
      */
     private Constraint transferOnlyWithinSameCity(ConstraintFactory factory) {
-        return factory.from(Transfer.class)
+        return factory.forEach(Transfer.class)
                 .filter(transfer ->
                         transfer.getQuantityToMove() != null
                                 && transfer.getQuantityToMove() > 0
@@ -47,7 +47,7 @@ public class StockConstraintProvider implements ConstraintProvider {
      * pentru un anumit produs.
      */
     private Constraint sourceStockMustNotBeExceeded(ConstraintFactory factory) {
-        return factory.from(Transfer.class)
+        return factory.forEach(Transfer.class)
                 .filter(transfer ->
                         transfer.getQuantityToMove() != null
                                 && transfer.getQuantityToMove() > 0
@@ -81,7 +81,7 @@ public class StockConstraintProvider implements ConstraintProvider {
     private Constraint preferMovingOldStock(ConstraintFactory factory) {
         final long STALE_DAYS_THRESHOLD = 100;
 
-        return factory.from(Transfer.class)
+        return factory.forEach(Transfer.class)
                 .filter(transfer ->
                         transfer.getQuantityToMove() != null
                                 && transfer.getQuantityToMove() > 0

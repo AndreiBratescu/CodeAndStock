@@ -18,26 +18,10 @@ import ai.timefold.solver.core.api.domain.variable.PlanningVariable;
 @NoArgsConstructor
 public class Transfer {
 
-    /**
-     * Produsul care urmează să fie mutat.
-     * Este un fact de problemă, nu o variabilă de planificare.
-     */
     private Product product;
-
-    /**
-     * Standul din care pleacă marfa.
-     */
     private StoreStand sourceStand;
-
-    /**
-     * Standul în care ajunge marfa.
-     */
     private StoreStand targetStand;
 
-    /**
-     * Cantitatea pe care solverul o decide pentru acest transfer.
-     * Domeniul de valori este definit la nivel de soluție (0..maxPerTransfer).
-     */
     @PlanningVariable(valueRangeProviderRefs = "quantityRange")
     private Integer quantityToMove;
 
@@ -47,5 +31,6 @@ public class Transfer {
         this.targetStand = targetStand;
         this.quantityToMove = 0;
     }
+
 }
 

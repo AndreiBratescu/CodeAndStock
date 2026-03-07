@@ -1,7 +1,7 @@
 package com.stock.stock.service;
 
-import ai.timefold.solver.spring.boot.autoconfigure.manager.SolverManager;
 import ai.timefold.solver.core.api.solver.SolverJob;
+import ai.timefold.solver.core.api.solver.SolverManager;
 import com.stock.stock.domain.InventoryItem;
 import com.stock.stock.domain.Product;
 import com.stock.stock.domain.StoreStand;
@@ -57,22 +57,22 @@ public class StockPlanningService {
         // 1. Identificăm inventarul vechi (candidați pentru mutare).
         List<InventoryItem> staleInventory = analyticsService.findStaleInventory(staleDays);
 
-        // 2. Construim toate combinațiile posibile de transfer
-        //    din standurile cu stoc vechi către alte standuri din același oraș.
+        // 2. Construim transferuri posibile: din standuri cu stoc vechi către standuri din același oraș.
+        // Limităm la max 2 destinații per sursă pentru viteză maximă.
+        final int maxTargetsPerSource = 2;
         List<Transfer> transfers = new ArrayList<>();
         for (InventoryItem sourceItem : staleInventory) {
             StoreStand sourceStand = sourceItem.getStoreStand();
             if (sourceStand == null || sourceStand.getCity() == null) {
                 continue;
             }
+            int targetCount = 0;
             for (StoreStand targetStand : stands) {
-                if (targetStand.getId().equals(sourceStand.getId())) {
-                    continue; // nu are sens să mutăm în același stand
-                }
-                if (!sourceStand.getCity().equals(targetStand.getCity())) {
-                    continue; // restricție MVP: doar în același oraș
-                }
+                if (targetCount >= maxTargetsPerSource) break;
+                if (targetStand.getId().equals(sourceStand.getId())) continue;
+                if (!sourceStand.getCity().equals(targetStand.getCity())) continue;
                 transfers.add(new Transfer(sourceItem.getProduct(), sourceStand, targetStand));
+                targetCount++;
             }
         }
 
@@ -86,7 +86,7 @@ public class StockPlanningService {
 
         long problemId = System.currentTimeMillis();
         SolverJob<StockRedistributionSolution, Long> job =
-                solverManager.solve(problemId, id -> problem);
+                solverManager.solve(problemId, problem);
 
         try {
             return job.getFinalBestSolution();

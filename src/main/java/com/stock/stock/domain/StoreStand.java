@@ -16,6 +16,5 @@ public class StoreStand {
 
     private String mallName;
 
-    // Capacitatea ajută Timefold să nu trimită prea multe produse într-un stand mic
     private Integer storageCapacity;
 }
