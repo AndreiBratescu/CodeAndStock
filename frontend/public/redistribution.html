@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Raport redistribuire stocuri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --border: #334155;
+            --before: #22c55e;
+            --after: #3b82f6;
+            --radius: 10px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { font-size: 22px; margin-bottom: 8px; }
+        .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h2 .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 500;
+        }
+        .badge-before { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .badge-after { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .badge-transfer { background: var(--accent-soft); color: var(--accent); }
+        .summary {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid var(--accent-soft);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--muted); font-weight: 500; font-size: 12px; }
+        tr:hover { background: rgba(255,255,255,0.03); }
+        .num { text-align: right; }
+        .transfer-item {
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--accent);
+        }
+        .transfer-item strong { color: var(--accent); }
+        .transfer-item .explanation { color: var(--muted); font-size: 13px; margin-top: 6px; }
+        .loading { color: var(--muted); padding: 40px; text-align: center; }
+        .error { color: #f87171; padding: 20px; }
+        button {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { filter: brightness(1.1); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Raport redistribuire stocuri</h1>
+    <p class="subtitle">Înainte → Transferuri recomandate → După</p>
+
+    <div style="margin-bottom: 16px;">
+        <button id="btnLoad">Generează raport</button>
+    </div>
+
+    <div id="content">
+        <p class="loading">Apasă «Generează raport» pentru a rula planificarea și a vedea stocul înainte și după.</p>
+    </div>
+</div>
+
+<script>
+    const API_BASE = (window.location.port === '3000' ? 'http://localhost:8080' : '');
+    const content = document.getElementById('content');
+    const btnLoad = document.getElementById('btnLoad');
+
+    function render(report) {
+        const { summaryExplanation, before, transfers, after } = report;
+
+        let html = '';
+
+        html += '<div class="summary">' + escapeHtml(summaryExplanation) + '</div>';
+
+        html += '<div class="card"><h2><span class="badge badge-before">ÎNAINTE</span> Stoc curent pe locații</h2>';
+        html += '<p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Starea actuală: produs, stand, cantitate, zile în stoc.</p>';
+        html += '<table><thead><tr><th>Produs (SKU)</th><th>Stand</th><th>Oraș</th><th class="num">Cantitate</th><th class="num">Zile în stoc</th></tr></thead><tbody>';
+        before.forEach(b => {
+            html += '<tr><td>' + escapeHtml(b.productName || b.productSku) + ' <span style="color:var(--muted)">' + escapeHtml(b.productSku || '') + '</span></td>';
+            html += '<td>' + escapeHtml(b.mallName || '') + '</td><td>' + escapeHtml(b.city || '') + '</td>';
+            html += '<td class="num">' + b.quantity + '</td><td class="num">' + (b.daysInStock != null ? b.daysInStock : '-') + '</td></tr>';
+        });
+        html += '</tbody></table></div>';
+
+        html += '<div class="card"><h2><span class="badge badge-transfer">TRANSFERURI</span> Mutări recomandate (cu explicații)</h2>';
+        if (transfers.length === 0) {
+            html += '<p style="color:var(--muted);">Nu există transferuri în acest plan.</p>';
+        } else {
+            transfers.forEach(t => {
+                html += '<div class="transfer-item">';
+                html += '<strong>' + escapeHtml(t.productName || t.productSku) + '</strong>: ';
+                html += t.quantityToMove + ' buc din <strong>' + escapeHtml(t.sourceMall || '') + ' (' + escapeHtml(t.sourceCity || '') + ')</strong> ';
+                html += '→ <strong>' + escapeHtml(t.targetMall || '') + ' (' + escapeHtml(t.targetCity || '') + ')</strong>';
+                html += '<div class="explanation">' + escapeHtml(t.explanation || '') + '</div>';
+                html += '</div>';
+            });
+        }
+        html += '</div>';
+
+        html += '<div class="card"><h2><span class="badge badge-after">DUPĂ</span> Stoc după aplicarea transferurilor</h2>';
+        html += '<p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Cum arată stocul după ce se execută toate mutările de mai sus.</p>';
+        html += '<table><thead><tr><th>Produs (SKU)</th><th>Stand</th><th>Oraș</th><th class="num">Cantitate</th><th class="num">Zile în stoc</th></tr></thead><tbody>';
+        after.forEach(a => {
+            html += '<tr><td>' + escapeHtml(a.productName || a.productSku) + ' <span style="color:var(--muted)">' + escapeHtml(a.productSku || '') + '</span></td>';
+            html += '<td>' + escapeHtml(a.mallName || '') + '</td><td>' + escapeHtml(a.city || '') + '</td>';
+            html += '<td class="num">' + a.quantity + '</td><td class="num">' + (a.daysInStock != null ? a.daysInStock : '-') + '</td></tr>';
+        });
+        html += '</tbody></table></div>';
+
+        content.innerHTML = html;
+    }
+
+    function escapeHtml(s) {
+        if (s == null) return '';
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+    }
+
+    btnLoad.addEventListener('click', async () => {
+        btnLoad.disabled = true;
+        content.innerHTML = '<p class="loading">Se rulează planificarea Timefold…</p>';
+        try {
+            const res = await fetch(API_BASE + '/api/planning/redistribution-report?staleDays=100&maxQtyPerTransfer=50');
+            if (!res.ok) throw new Error('Eroare: ' + res.status);
+            const report = await res.json();
+            render(report);
+        } catch (e) {
+            content.innerHTML = '<p class="error">' + escapeHtml(e.message) + '</p>';
+        } finally {
+            btnLoad.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
