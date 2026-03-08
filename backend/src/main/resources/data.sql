@@ -11,14 +11,20 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Create sample users with BCrypt hashed passwords
 -- Password for all users: password123
--- BCrypt hash: $2a$10$slYQmyNdGzin7olVyeIS/OPST9/PgBkqquzi.Ss72gAZS98/LzUm2
+-- BCrypt hash: $2b$10$T/scrPaVfTawfLp7ezuX4O9cv4rFoR81AtYMtneUItIh6xxjQiYUG
 INSERT INTO app_users (id, username, email, password, roles, enabled, store_stand_id)
 VALUES
-  (1, 'employee_plaza', 'employee.plaza@example.com', '$2a$10$slYQmyNdGzin7olVyeIS/OPST9/PgBkqquzi.Ss72gAZS98/LzUm2', 'ROLE_EMPLOYEE', true, 1),
-  (2, 'employee_afi', 'employee.afi@example.com', '$2a$10$slYQmyNdGzin7olVyeIS/OPST9/PgBkqquzi.Ss72gAZS98/LzUm2', 'ROLE_EMPLOYEE', true, 2),
-  (3, 'employee_constanta', 'employee.constanta@example.com', '$2a$10$slYQmyNdGzin7olVyeIS/OPST9/PgBkqquzi.Ss72gAZS98/LzUm2', 'ROLE_EMPLOYEE', true, 3),
-  (4, 'admin_user', 'admin@example.com', '$2a$10$slYQmyNdGzin7olVyeIS/OPST9/PgBkqquzi.Ss72gAZS98/LzUm2', 'ROLE_ADMIN', true, 1)
-ON CONFLICT (id) DO NOTHING;
+  (1, 'employee_plaza', 'employee.plaza@example.com', '$2b$10$T/scrPaVfTawfLp7ezuX4O9cv4rFoR81AtYMtneUItIh6xxjQiYUG', 'ROLE_EMPLOYEE', true, 1),
+  (2, 'employee_afi', 'employee.afi@example.com', '$2b$10$T/scrPaVfTawfLp7ezuX4O9cv4rFoR81AtYMtneUItIh6xxjQiYUG', 'ROLE_EMPLOYEE', true, 2),
+  (3, 'employee_constanta', 'employee.constanta@example.com', '$2b$10$T/scrPaVfTawfLp7ezuX4O9cv4rFoR81AtYMtneUItIh6xxjQiYUG', 'ROLE_EMPLOYEE', true, 3),
+  (4, 'admin_user', 'admin@example.com', '$2b$10$T/scrPaVfTawfLp7ezuX4O9cv4rFoR81AtYMtneUItIh6xxjQiYUG', 'ROLE_ADMIN', true, 1)
+ON CONFLICT (username) DO UPDATE
+SET
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
+  roles = EXCLUDED.roles,
+  enabled = EXCLUDED.enabled,
+  store_stand_id = EXCLUDED.store_stand_id;
 
 -- Sample products
 INSERT INTO products (id, sku, category, name, brand, model, color, price)

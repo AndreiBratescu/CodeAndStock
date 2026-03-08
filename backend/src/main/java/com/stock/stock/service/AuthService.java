@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
 
+    private static final String SEEDED_PASSWORD_HASH = "$2b$10$T/scrPaVfTawfLp7ezuX4O9cv4rFoR81AtYMtneUItIh6xxjQiYUG";
+
     private final AppUserRepository appUserRepository;
     private final StoreStandRepository storeStandRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -85,11 +87,30 @@ public class AuthService {
         AppUser user = appUserRepository.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + loginRequest.getUsername()));
 
+        String submittedPassword = loginRequest.getPassword();
+        String storedPasswordHash = user.getPassword();
+        boolean hashLooksBcrypt = storedPasswordHash != null
+            && storedPasswordHash.matches("^\\$2[aby]\\$\\d{2}\\$.+");
+        int storedHashLength = storedPasswordHash == null ? 0 : storedPasswordHash.length();
+        boolean passwordMatches = submittedPassword != null && passwordEncoder.matches(submittedPassword, storedPasswordHash);
+        boolean seededHashCheck = passwordEncoder.matches("password123", SEEDED_PASSWORD_HASH);
+
+        log.info(
+            "Auth debug - username: {}, submittedPasswordMasked: {}, storedPasswordHash: {}, storedHashLength: {}, hashLooksBcrypt: {}, seededHashCheck(password123): {}, matches: {}",
+                user.getUsername(),
+                maskPassword(submittedPassword),
+                storedPasswordHash,
+            storedHashLength,
+            hashLooksBcrypt,
+            seededHashCheck,
+                passwordMatches
+        );
+
         if (!user.getEnabled()) {
             throw new RuntimeException("User account is disabled");
         }
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordMatches) {
             throw new RuntimeException("Invalid password");
         }
 
@@ -143,6 +164,19 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setRefreshToken(null);
         appUserRepository.save(user);
+    }
+
+    private String maskPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            return "<empty>";
+        }
+
+        if (password.length() == 1) {
+            return "*";
+        }
+
+        return password.charAt(0) + "***" + password.charAt(password.length() - 1)
+                + " (len=" + password.length() + ")";
     }
 }
 
