@@ -11,9 +11,9 @@ import {
   Select,
   SpaceBetween,
 } from '@cloudscape-design/components'
-import './App.css'
+import '../App.css'
 
-export default function Register() {
+export default function Register({ onNavigateToLogin }) {
   const [formData, setFormData] = useState({
     email: '',
     storeStandId: null,
@@ -164,12 +164,12 @@ export default function Register() {
 
             <Box fontSize="body-s" color="text-body-secondary">
               Already have an account?{' '}
-              <a href="/" onClick={(e) => {
-                e.preventDefault()
-                window.location.href = '/'
-              }}>
+              <Button
+                variant="inline-link"
+                onClick={onNavigateToLogin}
+              >
                 Sign in here
-              </a>
+              </Button>
             </Box>
           </SpaceBetween>
         </Container>
