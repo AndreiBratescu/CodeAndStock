@@ -1,0 +1,9 @@
+{
+  "name": "codeandstock-frontend",
+  "version": "0.0.1-SNAPSHOT",
+  "private": true,
+  "description": "Stock Optimization - Static frontend (manager, planning)",
+  "scripts": {
+    "start": "npx serve public -p 3000"
+  }
+}
