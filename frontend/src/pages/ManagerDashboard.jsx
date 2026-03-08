@@ -38,7 +38,7 @@ function ManagerDashboard() {
   const loadStock = async () => {
     setStockLoading(true)
     try {
-      const data = await inventoryService.getInventoryByStand()
+      const data = await inventoryService.getAllInventory()
       setStock(Array.isArray(data) ? data : [])
     } catch (err) {
       setNotifications((n) => [
@@ -121,7 +121,7 @@ function ManagerDashboard() {
       <Box padding={{ top: 'm', horizontal: 'l' }}>
         <SpaceBetween size="m">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-            <Header variant="h1" description="Stoc, analiză și predicție pentru standul tău.">
+            <Header variant="h1" description="Stoc, analiză și predicție pentru toate standurile.">
               CodeAndStock – Manager magazin
             </Header>
             <SpaceBetween direction="horizontal" size="s">
@@ -171,6 +171,7 @@ function ManagerDashboard() {
                   columnDefinitions={[
                     { id: 'sku', header: 'SKU', cell: (i) => i.product?.sku ?? '-' },
                     { id: 'name', header: 'Produs', cell: (i) => i.product?.name ?? '-' },
+                    { id: 'stand', header: 'Stand', cell: (i) => `${i.storeStand?.mallName ?? '-'} (${i.storeStand?.city?.name ?? '-'})` },
                     {
                       id: 'qty',
                       header: 'Stoc',
