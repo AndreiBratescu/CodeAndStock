@@ -56,8 +56,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/refresh-token").permitAll()
-                        .requestMatchers("/api/planning/**").permitAll()
-                        .requestMatchers("/redistribution.html", "/manager.html", "/").permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
