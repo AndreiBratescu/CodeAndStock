@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Alert,
   Box,
@@ -23,6 +24,7 @@ const DEMO_USERS = [
 ]
 
 export default function Login({ onNavigateToRegister }) {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState(INITIAL_FORM)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -73,6 +75,7 @@ export default function Login({ onNavigateToRegister }) {
       saveSession(payload)
       setSessionData(payload)
       setFormData(INITIAL_FORM)
+      navigate('/manager', { replace: true })
     } catch (error) {
       setSessionData(null)
       setErrorMessage(error.message || 'Unable to login right now. Please try again.')
@@ -159,7 +162,7 @@ export default function Login({ onNavigateToRegister }) {
               Don't have an account?{' '}
               <Button
                 variant="inline-link"
-                onClick={onNavigateToRegister}
+                onClick={() => navigate('/register')}
               >
                 Request access here
               </Button>

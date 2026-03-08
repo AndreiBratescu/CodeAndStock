@@ -1,27 +1,27 @@
-import { useState } from 'react'
-import { Button } from '@cloudscape-design/components'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ManagerDashboard from './pages/ManagerDashboard'
+import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('login') // 'login' or 'register'
-
   return (
-    <>
-      {currentPage === 'login' ? (
-        <Login onNavigateToRegister={() => setCurrentPage('register')} />
-      ) : (
-        <div>
-          <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 1000 }}>
-            <Button variant="inline-link" onClick={() => setCurrentPage('login')}>
-              ← Back to Sign In
-            </Button>
-          </div>
-          <Register onNavigateToLogin={() => setCurrentPage('login')} />
-        </div>
-      )}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/manager"
+          element={
+            <ProtectedRoute>
+              <ManagerDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
