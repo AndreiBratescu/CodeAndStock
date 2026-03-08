@@ -113,6 +113,11 @@ public class ProductService {
         return inventoryRepository.findByStoreStandId(currentUser.getStoreStand().getId());
     }
 
+    @Transactional(readOnly = true)
+    public List<InventoryItem> getAllInventory() {
+        return inventoryRepository.findAll();
+    }
+
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {

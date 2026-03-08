@@ -48,5 +48,17 @@ public class ProductController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/inventory/all")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<InventoryItem>> getAllInventory() {
+        try {
+            List<InventoryItem> inventory = productService.getAllInventory();
+            return ResponseEntity.ok(inventory);
+        } catch (RuntimeException e) {
+            log.error("Error fetching all inventory: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
 
