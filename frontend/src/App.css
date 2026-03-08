@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.manager-dashboard {
+  min-height: 100vh;
+  background: var(--color-background-container-content, #fafafa);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

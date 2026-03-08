@@ -1,8 +1,13 @@
 import api from './api';
 
 export const saleService = {
-    // Apelează @PostMapping("/api/employee/sale")
-    saveSale: async (saleData) => {
+  /** GET /api/sales/my-stand-sales - vânzări pentru standul utilizatorului (analiză) */
+  getMyStandSales: async () => {
+    const response = await api.get('/sales/my-stand-sales');
+    return response.data;
+  },
+  /** POST /api/employee/sale */
+  saveSale: async (saleData) => {
         try {
             const response = await api.post('/employee/sale', saleData);
             return response.data; // Returnează obiectul Sale salvat
