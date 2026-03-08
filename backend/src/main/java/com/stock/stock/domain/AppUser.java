@@ -33,8 +33,8 @@ public class AppUser {
     @Column(nullable = false)
     private Boolean enabled = true;
 
-    @OneToOne
-    @JoinColumn(name = "store_stand_id", unique = true)
+    @ManyToOne
+    @JoinColumn(name = "store_stand_id")
     private StoreStand storeStand;
 
     @Column(columnDefinition = "TEXT")

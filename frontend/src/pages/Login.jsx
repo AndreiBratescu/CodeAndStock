@@ -22,7 +22,7 @@ const DEMO_USERS = [
   { label: 'admin_user', password: 'password123' },
 ]
 
-export default function Login({ onNavigateToRegister }) {
+export default function Login({ onNavigateToRegister, onLoginSuccess }) {
   const [formData, setFormData] = useState(INITIAL_FORM)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -73,6 +73,8 @@ export default function Login({ onNavigateToRegister }) {
       saveSession(payload)
       setSessionData(payload)
       setFormData(INITIAL_FORM)
+      // Navigate based on role
+      if (onLoginSuccess) onLoginSuccess()
     } catch (error) {
       setSessionData(null)
       setErrorMessage(error.message || 'Unable to login right now. Please try again.')
