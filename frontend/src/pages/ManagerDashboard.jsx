@@ -152,8 +152,9 @@ function ManagerDashboard() {
 
           <Grid
             gridDefinition={[
-              { colspan: { default: 12, xs: 12, s: 12, m: 6 } },
-              { colspan: { default: 12, xs: 12, s: 12, m: 6 } },
+              { colspan: { default: 12, xs: 12, s: 12, m: 4 } },
+              { colspan: { default: 12, xs: 12, s: 12, m: 4 } },
+              { colspan: { default: 12, xs: 12, s: 12, m: 4 } },
             ]}
           >
             <Container
@@ -217,9 +218,7 @@ function ManagerDashboard() {
                 empty="Nicio vânzare înregistrată."
               />
             </Container>
-          </Grid>
 
-          <Box margin={{ top: 'l' }}>
             <Container
               header={
                 <Header
@@ -261,7 +260,7 @@ function ManagerDashboard() {
                 </SpaceBetween>
               </Box>
             </Container>
-          </Box>
+          </Grid>
         </SpaceBetween>
       </Box>
     </div>

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080", "http://localhost:5173"})
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:8080", "http://localhost:5173" })
 public class AuthController {
 
     private final AuthService authService;
@@ -28,8 +28,8 @@ public class AuthController {
     private final StoreStandRepository storeStandRepository;
 
     public AuthController(AuthService authService,
-                          RegistrationRequestRepository registrationRequestRepository,
-                          StoreStandRepository storeStandRepository) {
+            RegistrationRequestRepository registrationRequestRepository,
+            StoreStandRepository storeStandRepository) {
         this.authService = authService;
         this.registrationRequestRepository = registrationRequestRepository;
         this.storeStandRepository = storeStandRepository;
@@ -55,8 +55,7 @@ public class AuthController {
             log.info(
                     "Login payload debug - username: {}, passwordLength: {}",
                     loginRequest.getUsername(),
-                    loginRequest.getPassword() == null ? 0 : loginRequest.getPassword().length()
-            );
+                    loginRequest.getPassword() == null ? 0 : loginRequest.getPassword().length());
             LoginResponse response = authService.authenticate(loginRequest);
             log.info("User {} logged in successfully", loginRequest.getUsername());
             return ResponseEntity.ok(response);
@@ -91,7 +90,8 @@ public class AuthController {
     }
 
     @PostMapping("/registration-request")
-    public ResponseEntity<RegistrationRequestResponseDto> submitRegistrationRequest(@RequestBody RegistrationRequestDto requestDto) {
+    public ResponseEntity<RegistrationRequestResponseDto> submitRegistrationRequest(
+            @RequestBody RegistrationRequestDto requestDto) {
         try {
             log.info("Registration request submitted for email: {}", requestDto.getEmail());
 
@@ -102,6 +102,7 @@ public class AuthController {
                     .email(requestDto.getEmail())
                     .storeStand(storeStand)
                     .status(RegistrationRequest.RequestStatus.PENDING)
+                    .createdAt(java.time.LocalDateTime.now())
                     .build();
 
             RegistrationRequest saved = registrationRequestRepository.save(registrationRequest);
@@ -132,4 +133,3 @@ public class AuthController {
         }
     }
 }
-
