@@ -31,27 +31,21 @@ export default function Login({ onNavigateToRegister }) {
   const [sessionData, setSessionData] = useState(null)
 
   const canSubmit = useMemo(() => {
-    return formData.username.trim().length > 0 && formData.password.length > 0
-  }, [formData.password, formData.username])
+    return formData.username.trim().length > 0 && formData.password.trim().length > 0
+  }, [formData])
 
-  const handleInputChange = (field) => ({ detail }) => {
-    setFormData((previousData) => ({
-      ...previousData,
-      [field]: detail.value,
-    }))
+  const handleInputChange = (field) => ({ detail }) =>
+    setFormData((prev) => ({ ...prev, [field]: detail.value }))
+
+  function saveSession(payload) {
+    localStorage.setItem('accessToken', payload.accessToken)
+    localStorage.setItem('refreshToken', payload.refreshToken)
+    localStorage.setItem('username', payload.username)
+    localStorage.setItem('roles', payload.roles)
+    if (payload.storeStandId) localStorage.setItem('storeStandId', payload.storeStandId)
   }
 
-  const saveSession = (data) => {
-    const expiresAt = Date.now() + (data.expiresIn ?? 0) * 1000
-    localStorage.setItem('accessToken', data.accessToken ?? '')
-    localStorage.setItem('refreshToken', data.refreshToken ?? '')
-    localStorage.setItem('username', data.username ?? '')
-    localStorage.setItem('roles', data.roles ?? '')
-    localStorage.setItem('storeStandId', String(data.storeStandId ?? ''))
-    localStorage.setItem('tokenExpiresAt', String(expiresAt))
-  }
-
-  const login = async () => {
+  const handleLogin = async () => {
     setErrorMessage('')
     setIsSubmitting(true)
 
@@ -75,7 +69,16 @@ export default function Login({ onNavigateToRegister }) {
       saveSession(payload)
       setSessionData(payload)
       setFormData(INITIAL_FORM)
-      navigate('/manager', { replace: true })
+
+      // Navigate based on role
+      const roles = payload.roles || ''
+      if (roles.includes('ROLE_ADMIN')) {
+        navigate('/admin', { replace: true })
+      } else if (roles.includes('ROLE_MANAGER')) {
+        navigate('/manager', { replace: true })
+      } else {
+        navigate('/stand', { replace: true })
+      }
     } catch (error) {
       setSessionData(null)
       setErrorMessage(error.message || 'Unable to login right now. Please try again.')
@@ -87,89 +90,81 @@ export default function Login({ onNavigateToRegister }) {
   return (
     <main className="login-page">
       <div className="grain-overlay" />
-      <section className="login-panel" aria-label="Sign in to CodeAndStock">
+
+      <div className="login-card">
         <Container>
-          <SpaceBetween size="l">
-            <Header variant="h1" description="Sign in to access stock analytics and operations.">
-              CodeAndStock Login
-            </Header>
-
-            <Box fontSize="body-s" color="text-body-secondary">
-              Demo users:
-              {' '}
-              {DEMO_USERS.map((user) => user.label).join(', ')}
-              {' '}
-              (password:
-              {' '}
-              password123)
-            </Box>
-
-            {errorMessage && (
-              <Alert type="error" header="Login failed" statusIconAriaLabel="Error">
-                {errorMessage}
-              </Alert>
-            )}
-
-            {sessionData && (
-              <Alert type="success" header="Login successful" statusIconAriaLabel="Success">
-                You are signed in as
-                {' '}
-                <strong>{sessionData.username}</strong>
-                {' '}
-                with role
-                {' '}
-                <strong>{sessionData.roles}</strong>
-                .
-              </Alert>
-            )}
-
-            <Form
-              onSubmit={({ detail }) => {
-                detail.preventDefault()
-                if (canSubmit && !isSubmitting) {
-                  login()
-                }
-              }}
-              actions={
-                <Button variant="primary" loading={isSubmitting} disabled={!canSubmit} onClick={login}>
-                  Sign in
-                </Button>
-              }
-            >
-              <SpaceBetween size="m">
-                <FormField label="Username">
-                  <Input
-                    value={formData.username}
-                    onChange={handleInputChange('username')}
-                    placeholder="employee_plaza"
-                    autoComplete="username"
-                  />
-                </FormField>
-
-                <FormField label="Password">
-                  <Input
-                    type="password"
-                    value={formData.password}
-                    onChange={handleInputChange('password')}
-                    placeholder="password123"
-                    autoComplete="current-password"
-                  />
-                </FormField>
-              </SpaceBetween>
-            </Form>
-
-            <Box fontSize="body-s" color="text-body-secondary">
-              Don't have an account?{' '}
-              <Button
-                variant="inline-link"
-                onClick={() => navigate('/register')}
+          <Form
+            header={
+              <Header
+                variant="h1"
+                description="Sign in to access your dashboard."
               >
-                Request access here
+                CodeAndStock
+              </Header>
+            }
+          >
+            <SpaceBetween size="l">
+              <FormField label="Username">
+                <Input
+                  type="text"
+                  value={formData.username}
+                  onChange={handleInputChange('username')}
+                  placeholder="e.g. employee_plaza"
+                />
+              </FormField>
+
+              <FormField label="Password">
+                <Input
+                  type="password"
+                  value={formData.password}
+                  onChange={handleInputChange('password')}
+                  placeholder="Your password"
+                />
+              </FormField>
+
+              {errorMessage && (
+                <Alert type="error" dismissible onDismiss={() => setErrorMessage('')}>
+                  {errorMessage}
+                </Alert>
+              )}
+
+              <Button
+                variant="primary"
+                fullWidth
+                loading={isSubmitting}
+                disabled={!canSubmit}
+                onClick={handleLogin}
+              >
+                Sign In
               </Button>
-            </Box>
-          </SpaceBetween>
+
+              <Box textAlign="center" fontSize="body-s">
+                <span style={{ color: '#aaa' }}>Don't have an account? </span>
+                <Button
+                  variant="inline-link"
+                  onClick={() => navigate('/register')}
+                >
+                  Request access
+                </Button>
+              </Box>
+
+              {/* Demo users helper */}
+              <Box textAlign="center" fontSize="body-s" color="text-body-secondary">
+                <details>
+                  <summary style={{ cursor: 'pointer' }}>Demo accounts</summary>
+                  <SpaceBetween size="xxs">
+                    {DEMO_USERS.map((u) => (
+                      <Box key={u.label} fontSize="body-s">
+                        <code>{u.label}</code> / <code>{u.password}</code>
+                      </Box>
+                    ))}
+                  </SpaceBetween>
+                </details>
+              </Box>
+            </SpaceBetween>
+          </Form>
         </Container>
-      </section>
+      </div>
     </main>
   )
 }
