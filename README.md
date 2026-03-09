@@ -130,7 +130,7 @@ Construiește modulul `backend` ca aplicație Spring Boot. Frontend-ul se ruleaz
 ```mermaid
 flowchart LR
   subgraph Client
-    Browser[UI React (Login, Employee, Manager)]
+    Browser[UI React - login/employee/manager]
   end
 
   subgraph Backend[Spring Boot API]
