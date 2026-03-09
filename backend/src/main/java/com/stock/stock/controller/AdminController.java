@@ -85,6 +85,20 @@ public class AdminController {
         }
     }
 
+    @PutMapping("/users/{id}/store")
+    public ResponseEntity<?> updateUserStore(
+            @PathVariable Long id,
+            @RequestBody StoreUpdateRequest dto) {
+        try {
+            AdminUserResponseDto response = adminService.updateUserStore(id, dto);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Failed to update user store {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Unknown error"));
+        }
+    }
+
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {

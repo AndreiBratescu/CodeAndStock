@@ -7,6 +7,7 @@ import com.stock.stock.dto.*;
 import com.stock.stock.repository.AppUserRepository;
 import com.stock.stock.repository.RegistrationRequestRepository;
 import com.stock.stock.repository.SaleRepository;
+import com.stock.stock.repository.StoreStandRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class AdminService {
     private final RegistrationRequestRepository registrationRequestRepository;
     private final AppUserRepository appUserRepository;
     private final SaleRepository saleRepository;
+    private final StoreStandRepository storeStandRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
@@ -33,11 +35,13 @@ public class AdminService {
     public AdminService(RegistrationRequestRepository registrationRequestRepository,
             AppUserRepository appUserRepository,
             SaleRepository saleRepository,
+            StoreStandRepository storeStandRepository,
             PasswordEncoder passwordEncoder,
             EmailService emailService) {
         this.registrationRequestRepository = registrationRequestRepository;
         this.appUserRepository = appUserRepository;
         this.saleRepository = saleRepository;
+        this.storeStandRepository = storeStandRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
@@ -171,6 +175,24 @@ public class AdminService {
         user.setRoles(dto.getRole());
         appUserRepository.save(user);
         log.info("Updated role of user {} to {}", user.getUsername(), dto.getRole());
+        return toUserDto(user);
+    }
+
+    @Transactional
+    public AdminUserResponseDto updateUserStore(Long userId, StoreUpdateRequest dto) {
+        AppUser user = appUserRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (dto.getStoreStandId() == null) {
+            user.setStoreStand(null);
+        } else {
+            StoreStand storeStand = storeStandRepository.findById(dto.getStoreStandId())
+                    .orElseThrow(() -> new RuntimeException("Store stand not found"));
+            user.setStoreStand(storeStand);
+        }
+
+        appUserRepository.save(user);
+        log.info("Updated store of user {} to stand id {}", user.getUsername(), dto.getStoreStandId());
         return toUserDto(user);
     }
 
