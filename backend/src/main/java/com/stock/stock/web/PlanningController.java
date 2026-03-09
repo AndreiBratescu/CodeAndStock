@@ -162,7 +162,7 @@ public class PlanningController {
         }
         int totalMoved = transfers.stream().mapToInt(TransferWithExplanationDto::quantityToMove).sum();
         return String.format(
-                "Redistribuire recomandată: %d transferuri, în total %d bucăți mutate din standuri cu stoc vechi (neînvândut) către standuri din același oraș. După aplicare, stocul este echilibrat conform coloanei «După».",
+                "Redistribuire recomandată: %d transferuri, în total %d bucăți mutate din standuri cu stoc vechi (nevândut) către standuri din același oraș.",
                 transfers.size(), totalMoved
         );
     }

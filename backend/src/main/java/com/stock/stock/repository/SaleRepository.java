@@ -31,5 +31,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     List<Sale> findByAppUser(AppUser appUser);
 
-    List<Sale> findByAppUserAndStoreStand(AppUser appUser, StoreStand storeStand);
+    // Toate vânzările pentru un anumit stand (indiferent de utilizator)
+    List<Sale> findByStoreStand(StoreStand storeStand);
 }

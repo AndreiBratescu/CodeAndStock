@@ -86,7 +86,14 @@ public class SaleService {
             throw new RuntimeException("User has no assigned store stand");
         }
 
-        return saleRepository.findByAppUserAndStoreStand(currentUser, currentUser.getStoreStand());
+        // Pentru analiză per stand: toate vânzările din stand-ul utilizatorului curent
+        return saleRepository.findByStoreStand(currentUser.getStoreStand());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Sale> getAllSalesForAnalysis() {
+        // Analiză agregată pentru toate standurile (manager)
+        return saleRepository.findAll();
     }
 
     private String getCurrentUsername() {

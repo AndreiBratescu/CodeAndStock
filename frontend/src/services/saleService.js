@@ -1,9 +1,9 @@
 import api from './api';
 
 export const saleService = {
-  /** GET /api/sales/my-stand-sales - vânzări pentru standul utilizatorului (analiză) */
-  getMyStandSales: async () => {
-    const response = await api.get('/sales/my-stand-sales');
+  /** GET /api/sales/all - vânzări pentru toate standurile (analiză manager) */
+  getAllSales: async () => {
+    const response = await api.get('/sales/all');
     return response.data;
   },
   /** POST /api/employee/sale */

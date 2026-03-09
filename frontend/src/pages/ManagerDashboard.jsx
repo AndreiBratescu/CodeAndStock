@@ -53,7 +53,7 @@ function ManagerDashboard() {
   const loadSales = async () => {
     setSalesLoading(true)
     try {
-      const data = await saleService.getMyStandSales()
+      const data = await saleService.getAllSales()
       setSales(Array.isArray(data) ? data : [])
     } catch (err) {
       setNotifications((n) => [
@@ -66,6 +66,8 @@ function ManagerDashboard() {
   }
 
   const loadPrediction = async () => {
+    // curățăm eventualul mesaj vechi de eroare pentru redistribuire
+    setNotifications((n) => n.filter((item) => item.id !== 'err-report'))
     setReportLoading(true)
     try {
       const data = await planningService.getRedistributionReport(100, 50)
@@ -117,7 +119,14 @@ function ManagerDashboard() {
   const transfers = report?.transfers ?? []
 
   return (
-    <div className="manager-dashboard">
+    <div
+      className="manager-dashboard awsui-dark-mode"
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#020617', // fundal închis ca în ecranul de gestiune stand
+        color: '#f9fafb',
+      }}
+    >
       <Box padding={{ top: 'm', horizontal: 'l' }}>
         <SpaceBetween size="m">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
@@ -162,7 +171,7 @@ function ManagerDashboard() {
                     />
                   }
                 >
-                  Search filter
+                  Filtru căutare
                 </Header>
               }
             >
@@ -193,13 +202,10 @@ function ManagerDashboard() {
             <Container
               header={
                 <Header variant="h2">
-                  Analiza stock
+                  Analiza stoc
                 </Header>
               }
             >
-              <Box color="text-body-secondary" margin={{ bottom: 's' }}>
-                De ex. ce se vinde cel mai bine
-              </Box>
               <Table
                 columnDefinitions={[
                   { id: 'sku', header: 'SKU', cell: (i) => i.product?.sku ?? '-' },
@@ -223,13 +229,10 @@ function ManagerDashboard() {
                     </Button>
                   }
                 >
-                  Prediction stock
+                  Redistribuire stoc
                 </Header>
               }
             >
-              <Box color="text-body-secondary" margin={{ bottom: 's' }}>
-                Notificare predicție / alege ce vrei să muți
-              </Box>
               {report?.summaryExplanation && (
                 <Box margin={{ bottom: 'm' }} padding="s" variant="div">
                   {report.summaryExplanation}
