@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:8080"})
 public class ProductController {
 
     private final ProductService productService;
@@ -45,6 +45,18 @@ public class ProductController {
             return ResponseEntity.ok(inventory);
         } catch (RuntimeException e) {
             log.error("Error fetching inventory for user stand: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/inventory/all")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<InventoryItem>> getAllInventory() {
+        try {
+            List<InventoryItem> inventory = productService.getAllInventory();
+            return ResponseEntity.ok(inventory);
+        } catch (RuntimeException e) {
+            log.error("Error fetching all inventory: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

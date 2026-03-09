@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Alert,
   Box,
@@ -13,7 +14,8 @@ import {
 } from '@cloudscape-design/components'
 import '../App.css'
 
-export default function Register({ onNavigateToLogin }) {
+export default function Register() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     storeStandId: null,
@@ -166,7 +168,7 @@ export default function Register({ onNavigateToLogin }) {
               Already have an account?{' '}
               <Button
                 variant="inline-link"
-                onClick={onNavigateToLogin}
+                onClick={() => navigate('/login')}
               >
                 Sign in here
               </Button>

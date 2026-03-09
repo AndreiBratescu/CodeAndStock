@@ -10,6 +10,7 @@ import com.stock.stock.service.StockPlanningService;
 import com.stock.stock.web.dto.RedistributionReportDto;
 import com.stock.stock.web.dto.StockAtLocationDto;
 import com.stock.stock.web.dto.TransferWithExplanationDto;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/planning")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:8080"})
 public class PlanningController {
 
     private final StockPlanningService stockPlanningService;

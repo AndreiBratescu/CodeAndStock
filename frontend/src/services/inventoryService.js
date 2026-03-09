@@ -10,5 +10,15 @@ export const inventoryService = {
             console.error("Eroare la preluarea inventarului:", error);
             throw error;
         }
+    },
+    // Apelează @GetMapping("/api/products/inventory/all")
+    getAllInventory: async () => {
+        try {
+            const response = await api.get('/products/inventory/all');
+            return response.data; // Returnează List<InventoryItem> pentru toate standurile
+        } catch (error) {
+            console.error("Eroare la preluarea inventarului complet:", error);
+            throw error;
+        }
     }
 };
