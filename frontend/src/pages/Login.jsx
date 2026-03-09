@@ -23,7 +23,7 @@ const DEMO_USERS = [
   { label: 'admin_user', password: 'password123' },
 ]
 
-export default function Login({ onNavigateToRegister }) {
+export default function Login() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState(INITIAL_FORM)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -88,23 +88,44 @@ export default function Login({ onNavigateToRegister }) {
   }
 
   return (
-    <main className="login-page">
-      <div className="grain-overlay" />
-
-      <div className="login-card">
-        <Container>
+    <main
+      className="login-page awsui-dark-mode"
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background:
+          'radial-gradient(circle at top left, #1e293b 0, #020617 40%, #000 100%)',
+        padding: '24px',
+      }}
+    >
+      <div
+        className="login-card"
+        style={{
+          width: '100%',
+          maxWidth: '420px',
+          backgroundColor: '#020617',
+          borderRadius: '16px',
+          boxShadow: '0 18px 45px rgba(0,0,0,0.65)',
+          border: '1px solid rgba(148,163,184,0.3)',
+        }}
+      >
+        <Container
+          header={
+            <Header
+              variant="h1"
+              description="Sign in to access your dashboard."
+            >
+              CodeAndStock
+            </Header>
+          }
+        >
           <Form
-            header={
-              <Header
-                variant="h1"
-                description="Sign in to access your dashboard."
-              >
-                CodeAndStock
-              </Header>
-            }
+            header={null}
           >
             <SpaceBetween size="l">
-              <FormField label="Username">
+              <FormField label={<span style={{ color: '#f9fafb' }}>Username</span>}>
                 <Input
                   type="text"
                   value={formData.username}
@@ -113,7 +134,7 @@ export default function Login({ onNavigateToRegister }) {
                 />
               </FormField>
 
-              <FormField label="Password">
+              <FormField label={<span style={{ color: '#f9fafb' }}>Password</span>}>
                 <Input
                   type="password"
                   value={formData.password}

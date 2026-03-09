@@ -98,15 +98,38 @@ export default function Register() {
   }
 
   return (
-    <main className="login-page">
-      <div className="grain-overlay" />
-      <section className="login-panel" aria-label="Register for CodeAndStock">
-        <Container>
-          <SpaceBetween size="l">
+    <main
+      className="login-page awsui-dark-mode"
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background:
+          'radial-gradient(circle at top left, #1e293b 0, #020617 40%, #000 100%)',
+        padding: '24px',
+      }}
+    >
+      <section
+        className="login-panel"
+        aria-label="Register for CodeAndStock"
+        style={{
+          width: '100%',
+          maxWidth: '480px',
+          backgroundColor: '#020617',
+          borderRadius: '16px',
+          boxShadow: '0 18px 45px rgba(0,0,0,0.65)',
+          border: '1px solid rgba(148,163,184,0.3)',
+        }}
+      >
+        <Container
+          header={
             <Header variant="h1" description="Register to request access to CodeAndStock.">
               Join CodeAndStock
             </Header>
-
+          }
+        >
+          <SpaceBetween size="l">
             {errorMessage && (
               <Alert type="error" header="Submission failed" statusIconAriaLabel="Error">
                 {errorMessage}
@@ -137,7 +160,7 @@ export default function Register() {
               }
             >
               <SpaceBetween size="m">
-                <FormField label="Email Address">
+                <FormField label={<span style={{ color: '#f9fafb' }}>Email Address</span>}>
                   <Input
                     value={formData.email}
                     onChange={handleInputChange('email')}
@@ -147,7 +170,7 @@ export default function Register() {
                   />
                 </FormField>
 
-                <FormField label="Store Stand Where You Work">
+                <FormField label={<span style={{ color: '#f9fafb' }}>Store Stand Where You Work</span>}>
                   <Select
                     selectedOption={
                       formData.storeStandId
