@@ -4,6 +4,7 @@ import Register from './pages/Register'
 import ManagerDashboard from './pages/ManagerDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import './App.css'
+import EmployeePage from "./pages/EmployeePage";
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+          <Route
+              path="/stand"
+              element={
+                  <ProtectedRoute>
+                      <EmployeePage />
+                  </ProtectedRoute>
+              }
+          />
       </Routes>
     </BrowserRouter>
   )
