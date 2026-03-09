@@ -174,7 +174,7 @@ function ManagerDashboard() {
                 </Header>
               }
             >
-              <Container header={<Header variant="h3">Stock</Header>}>
+              <Container header={<Header variant="h3">Stoc</Header>}>
                 <Table
                   columnDefinitions={[
                     { id: 'sku', header: 'SKU', cell: (i) => i.product?.sku ?? '-' },
@@ -201,7 +201,7 @@ function ManagerDashboard() {
             <Container
               header={
                 <Header variant="h2">
-                  Analiza stoc
+                  Analiză stoc
                 </Header>
               }
             >
@@ -256,9 +256,9 @@ function ManagerDashboard() {
               <Box margin={{ top: 'm' }}>
                 <SpaceBetween direction="horizontal" size="s">
                   <Button variant="primary" iconName="arrow-up" iconAlign="right" onClick={loadPrediction}>
-                    Buton Move Stock
+                    Redistribuie stoc
                   </Button>
-                  <Button onClick={loadStock}>Button Stock</Button>
+                  <Button onClick={loadStock}>Afișează stocul curent</Button>
                 </SpaceBetween>
               </Box>
             </Container>
