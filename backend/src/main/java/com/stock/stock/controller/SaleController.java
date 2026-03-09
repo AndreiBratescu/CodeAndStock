@@ -57,5 +57,17 @@ public class SaleController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/all")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Sale>> getAllSales() {
+        try {
+            List<Sale> sales = saleService.getAllSalesForAnalysis();
+            return ResponseEntity.ok(sales);
+        } catch (RuntimeException e) {
+            log.error("Error fetching all sales: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
 
