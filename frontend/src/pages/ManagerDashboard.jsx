@@ -176,6 +176,7 @@ function ManagerDashboard() {
             >
               <Container header={<Header variant="h3">Stoc</Header>}>
                 <Table
+                  variant="embedded"
                   columnDefinitions={[
                     { id: 'sku', header: 'SKU', cell: (i) => i.product?.sku ?? '-' },
                     { id: 'name', header: 'Produs', cell: (i) => i.product?.name ?? '-' },
@@ -206,6 +207,7 @@ function ManagerDashboard() {
               }
             >
               <Table
+                variant="embedded"
                 columnDefinitions={[
                   { id: 'sku', header: 'SKU', cell: (i) => i.product?.sku ?? '-' },
                   { id: 'name', header: 'Produs', cell: (i) => i.product?.name ?? '-' },
@@ -241,6 +243,7 @@ function ManagerDashboard() {
                 </Box>
               )}
               <Table
+                variant="embedded"
                 columnDefinitions={[
                   { id: 'product', header: 'Produs', cell: (t) => t.productName ?? t.productSku ?? '-' },
                   { id: 'from', header: 'De la', cell: (t) => `${t.sourceMall ?? ''} (${t.sourceCity ?? ''})` },

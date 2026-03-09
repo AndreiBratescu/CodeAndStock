@@ -148,6 +148,7 @@ const EmployeePage = () => {
                                     }
                                 >
                                     <Table
+                                        variant="embedded"
                                         items={filteredItems}
                                         loading={loading}
                                         trackBy="id"
