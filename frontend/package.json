@@ -2,10 +2,6 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "vite": "^6.0.0",
-    "@vitejs/plugin-react": "^4.3.4"
-  },
   "dependencies": {
     "@cloudscape-design/components": "^3.0.1224",
     "@cloudscape-design/global-styles": "^1.0.51",
@@ -19,11 +15,15 @@
     "react-router-dom": "^7.13.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "vite": "^7.1.7"
+  },
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
+    "dev": "vite --port 5173",
+    "start": "vite --port 5173",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port 5173"
   },
   "eslintConfig": {
     "extends": [
@@ -42,6 +42,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:8080"
+  }
 }

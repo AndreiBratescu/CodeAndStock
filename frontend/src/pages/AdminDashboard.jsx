@@ -26,6 +26,8 @@ const ROLE_OPTIONS = [
   { label: 'Admin', value: 'ROLE_ADMIN' },
 ]
 
+const NO_STORE_OPTION = { label: 'No store', value: '' }
+
 function getAuthHeaders() {
   return {
     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -40,6 +42,7 @@ export default function AdminDashboard({ onLogout }) {
   const [users, setUsers] = useState([])
   const [requestsLoading, setRequestsLoading] = useState(true)
   const [usersLoading, setUsersLoading] = useState(true)
+  const [storeOptions, setStoreOptions] = useState([NO_STORE_OPTION])
   const [approvalAlert, setApprovalAlert] = useState(null)
   const [errorAlert, setErrorAlert] = useState(null)
 
@@ -99,12 +102,32 @@ export default function AdminDashboard({ onLogout }) {
     }
   }, [])
 
+  const fetchStoreOptions = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/store-stands', {
+        headers: getAuthHeaders(),
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      setStoreOptions([
+        NO_STORE_OPTION,
+        ...data.map((store) => ({
+          label: `${store.mallName} (${store.city})`,
+          value: String(store.id),
+        })),
+      ])
+    } catch (e) {
+      console.error('Failed to fetch store options', e)
+    }
+  }, [])
+
   useEffect(() => {
     fetchRequests()
     fetchUsers()
+    fetchStoreOptions()
     const interval = setInterval(fetchRequests, POLL_INTERVAL_MS)
     return () => clearInterval(interval)
-  }, [fetchRequests, fetchUsers])
+  }, [fetchRequests, fetchUsers, fetchStoreOptions])
 
   // ─── Generate credentials for pending requests ─────────────────
 
@@ -211,6 +234,22 @@ export default function AdminDashboard({ onLogout }) {
       setErrorAlert('Failed to update role.')
     } finally {
       setActionLoading((prev) => ({ ...prev, [`role_${userId}`]: false }))
+      fetchUsers()
+    }
+  }
+
+  const handleStoreChange = async (userId, storeStandId) => {
+    setActionLoading((prev) => ({ ...prev, [`store_${userId}`]: true }))
+    try {
+      await fetch(`${API_BASE}/users/${userId}/store`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ storeStandId }),
+      })
+    } catch (e) {
+      setErrorAlert('Failed to update store.')
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [`store_${userId}`]: false }))
       fetchUsers()
     }
   }
@@ -406,7 +445,20 @@ export default function AdminDashboard({ onLogout }) {
                       {
                         id: 'store',
                         header: 'Store',
-                        cell: (item) => item.storeMallName || '—',
+                        cell: (item) => (
+                          <Select
+                            expandToViewport={true}
+                            selectedOption={
+                              storeOptions.find((o) => o.value === String(item.storeStandId || '')) || NO_STORE_OPTION
+                            }
+                            options={storeOptions}
+                            onChange={({ detail }) => {
+                              const value = detail.selectedOption?.value
+                              handleStoreChange(item.id, value ? parseInt(value, 10) : null)
+                            }}
+                            disabled={!!actionLoading[`store_${item.id}`]}
+                          />
+                        ),
                       },
                       {
                         id: 'role',
